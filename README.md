@@ -1,12 +1,13 @@
 # laravel_redux_toolkit_crud
-### Laravel Backend api
+
+## Laravel Backend api
   - employee lists
   - employee store
   - employee edit
   - employee update
   - employee delete
 
-### Reactjs 
+## Reactjs 
   - views (employee_lists, add_employee, edit_employee)
   - store (redux toolkit)
   - css (react bootstrap)
