@@ -8,6 +8,7 @@ import Button from 'react-bootstrap/Button';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getEditEmployee, updateEmployee } from '../../features/employeeSlice';
+import Swal from "sweetalert2";
 
 const EditEmployee = () => {
   const dispatch = useDispatch();
@@ -49,13 +50,33 @@ const EditEmployee = () => {
 
   const handleUpdateEmployee = (e) => {
     e.preventDefault();
-    dispatch(updateEmployee(employee));
-    navigate('/', { replace: true });
+
+    dispatch(updateEmployee(employee)).then((result) => {
+      if(result)
+      {
+        console.log(result);
+
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          icon: 'success',
+          title: result.payload.message
+        })
+
+        dispatch(getEditEmployee(id));
+      }
+    }).catch((err) => {
+      console.log(err);
+    });
+
+    //navigate('/', { replace: true });
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    // Update the 'employee' object, not 'employees'
     setEmployee({ ...employee, [name]: value });
   };
 

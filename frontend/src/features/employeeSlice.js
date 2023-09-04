@@ -15,7 +15,13 @@ export const storeEmployee = createAsyncThunk("employee/storeEmployee", async(da
 
     try {
         const response = await http().post('crud/v1/employee/store', data);
-        return response.data;
+        const result = {
+            data: response.data,
+            status: response.status
+        }
+
+        return result;
+       
     } catch(error) {
         return error.response.data;
     }
@@ -35,8 +41,6 @@ export const updateEmployee = createAsyncThunk("employee/updateEmployee", async(
 
     try {
         const response = await http().post(`crud/v1/employee/update/${data.id}`, data);
-
-        this.getAllEmployee();
 
         return response.data;
     } catch(error) {
@@ -97,7 +101,8 @@ const employeeSlice = createSlice({
 
         builder.addCase(storeEmployee.fulfilled, (state, action) => {
             state.isLoading = false;
-            state.success_message = action.payload.message;
+            state.success_message = action.payload.data.message;
+            state.status = action.payload.status;
             state.error = null;
         })
 
@@ -105,6 +110,7 @@ const employeeSlice = createSlice({
             state.isLoading = false;
             state.employees = [];
             state.error = action.error.message;
+            console.log(action.error.message);
         })
         /*Employee store section end*/
 

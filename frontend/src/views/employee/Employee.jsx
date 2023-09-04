@@ -8,6 +8,7 @@ import Button from 'react-bootstrap/Button';
 import {Link} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import { deleteEmployee, getAllEmployee } from '../../features/employeeSlice';
+import Swal from "sweetalert2";
 
 const Employee = () => {
 
@@ -26,7 +27,19 @@ const Employee = () => {
     dispatch(deleteEmployee(id)).then((res) => {
       if(res)
       {
+
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          icon: 'success',
+          title: res.payload.message
+        })
+
         dispatch(getAllEmployee());
+
       }
     }).catch((err) => {
       console.log(err);

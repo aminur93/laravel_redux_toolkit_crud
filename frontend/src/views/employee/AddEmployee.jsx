@@ -8,6 +8,7 @@ import Button from 'react-bootstrap/Button';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { getAllEmployee, storeEmployee } from '../../features/employeeSlice';
+import Swal from "sweetalert2";
 
 const AddEmployee = () => {
 
@@ -26,15 +27,33 @@ const AddEmployee = () => {
     const data = {name, email, phone, country, city};
 
     dispatch(storeEmployee(data)).then((result) => {
-      if(result)
+      console.log(result);
+
+      if(result.payload.status == 201)
       {
         dispatch(getAllEmployee());
+
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          icon: 'success',
+          title: result.payload.data.message
+        })
+        
+        setName('');
+        setEmail('');
+        setPhone('');
+        setCountry('');
+        setCity('');
       }
     }).catch((err) => {
       console.log(err);
     });
 
-    navigate("/", {replace: true});
+    //navigate("/", {replace: true});
   }
 
   return (
