@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -6,8 +6,34 @@ import Col from 'react-bootstrap/Col';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import {Link} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import { deleteEmployee, getAllEmployee } from '../../features/employeeSlice';
 
 const Employee = () => {
+
+  const employees = useSelector((state) => state.employee.employees);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+
+    dispatch(getAllEmployee());
+
+  }, [dispatch])
+
+  const handleDeleteEmployee = (id) => {
+
+    dispatch(deleteEmployee(id)).then((res) => {
+      if(res)
+      {
+        dispatch(getAllEmployee());
+      }
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
+
   return (
     <>
         <Container fluid="md">
@@ -29,7 +55,6 @@ const Employee = () => {
                                   <thead>
                                       <tr>
                                         <th>#</th>
-                                        <th>Image</th>
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Phone</th>
@@ -39,23 +64,28 @@ const Employee = () => {
                                       </tr>
                                   </thead>
                                   <tbody>
-                                      <tr>
-                                          <td>1</td>
-                                          <td></td>
-                                          <td>Aminur</td>
-                                          <td>aminur@gmail.com</td>
-                                          <td>01772119941</td>
-                                          <td>Bangladesh</td>
-                                          <td>Dhaka</td>
-                                          <td>
-                                              <div className='text-center'>
-                                                  <Link to="/edit-employee">
-                                                    <Button size="sm" variant="info">Edit</Button>
-                                                  </Link>
-                                                  <Button size='sm' variant="danger" style={{ marginLeft:'5px' }}>Delete</Button>
-                                              </div>
-                                          </td>
-                                      </tr>
+                                    {
+                                      employees && employees.map((employee) => {
+                                        const {id,name,email,phone,country,city} = employee;
+                                        return <tr key={employee.id}>
+                                                  <td>{employee.id}</td>
+                                                  <td>{employee.name}</td>
+                                                  <td>{employee.email}</td>
+                                                  <td>{employee.phone}</td>
+                                                  <td>{employee.country}</td>
+                                                  <td>{employee.city}</td>
+                                                  <td>
+                                                      <div className='text-center'>
+                                                          <Link to={`/edit-employee/${employee.id}`} state={{id,name,email,phone,country,city}}>
+                                                            <Button size="sm" variant="info">Edit</Button>
+                                                          </Link>
+                                                          <Button onClick={() => {handleDeleteEmployee(employee.id)}} size='sm' variant="danger" style={{ marginLeft:'5px' }}>Delete</Button>
+                                                      </div>
+                                                  </td>
+                                              </tr>
+                                      })
+                                    }
+                                      
                                   </tbody>
                               </Table>
                            </div>

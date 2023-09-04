@@ -11,7 +11,7 @@ const index = () => {
             <Routes>
                 <Route path='/' element={<Employee />}></Route>
                 <Route path='/add-employee' element={<AddEmployee />}></Route>
-                <Route path='/edit-employee' element={<EditEmployee />}></Route>
+                <Route path="/edit-employee/:id" element={<EditEmployee />}></Route>
             </Routes>
         </Router>
     </div>

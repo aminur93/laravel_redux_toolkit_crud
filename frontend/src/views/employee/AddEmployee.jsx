@@ -1,13 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { getAllEmployee, storeEmployee } from '../../features/employeeSlice';
 
 const AddEmployee = () => {
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleStoreEmployee = (e) => {
+    e.preventDefault();
+
+    const data = {name, email, phone, country, city};
+
+    dispatch(storeEmployee(data)).then((result) => {
+      if(result)
+      {
+        dispatch(getAllEmployee());
+      }
+    }).catch((err) => {
+      console.log(err);
+    });
+
+    navigate("/", {replace: true});
+  }
+
   return (
     <>
         <Container fluid="md">
@@ -20,42 +49,42 @@ const AddEmployee = () => {
                       </Card.Header>
                 
                       <Card.Body>
-                          <Form>
+                          <Form onSubmit={handleStoreEmployee}>
                             <Form.Group className="mb-3">
                               <Form.Label>Name</Form.Label>
-                              <Form.Control type="text" name='name' placeholder="Enter Name" />
+                              <Form.Control type="text" name='name' value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter Name" />
                             </Form.Group>
 
                             <Form.Group className="mb-3">
                               <Form.Label>Email</Form.Label>
-                              <Form.Control type="email" name='email' placeholder="Enter Email" />
+                              <Form.Control type="email" name='email' value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter Email" />
                             </Form.Group>
 
                             <Form.Group className="mb-3">
                               <Form.Label>Phone</Form.Label>
-                              <Form.Control type="text" name='phone' placeholder="Enter Phone" />
+                              <Form.Control type="text" name='phone' value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Enter Phone" />
                             </Form.Group>
 
                             <Form.Group className="mb-3">
                               <Form.Label>Country</Form.Label>
-                              <Form.Control type="text" name='country' placeholder="Enter Country" />
+                              <Form.Control type="text" name='country' value={country} onChange={(e) => setCountry(e.target.value)} placeholder="Enter Country" />
                             </Form.Group>
 
                             <Form.Group className="mb-3">
                               <Form.Label>City</Form.Label>
-                              <Form.Control type="text" name='city' placeholder="Enter City" />
+                              <Form.Control type="text" name='city' value={city} onChange={(e) => setCity(e.target.value)} placeholder="Enter City" />
                             </Form.Group>
 
-                            <Form.Group controlId="formFile" className="mb-3">
+                            {/* <Form.Group controlId="formFile" className="mb-3">
                               <Form.Label>Image</Form.Label>
                               <Form.Control type="file" name='image' />
-                            </Form.Group>
+                            </Form.Group> */}
 
                             <div style={{ display:'flex', justifyContent:'end' }}>
                                 <Link to="/">
                                   <Button size="sm" variant="warning">Back</Button>
                                 </Link>
-                                <Button size='sm' variant="success" style={{ marginLeft:'5px' }}>Submit</Button>
+                                <Button type='submit' size='sm' variant="success" style={{ marginLeft:'5px' }}>Submit</Button>
                             </div>
                           </Form>
                       </Card.Body>
